@@ -346,7 +346,7 @@ class ResistantVirus(SimpleVirus):
                     break
         if flag==True:
             if aux1[0]:
-                child=ResistantVirus(self.maxBirthProb, self.clearProb, self.resistances, self.mutProb)
+                child=ResistantVirus(self.maxBirthProb, self.clearProb, self.resistances.copy(), self.mutProb)
             else:
                 raise NoChildException()
         else:
@@ -643,12 +643,12 @@ def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
         for j in range(150):
             pop=patient.update()
             avgPop[j]+=pop
-            guttPop[j]+=patient.getResistPop('guttagonol')
+            guttPop[j]+=patient.getResistPop(['guttagonol'])
         patient.addPrescription('guttagonol')
         for j in range(150,300):
             pop=patient.update()
             avgPop[j]+=pop
-            guttPop[j]+=patient.getResistPop('guttagonol')
+            guttPop[j]+=patient.getResistPop(['guttagonol'])
     for i in range(300):
         avgPop[i]/=numTrials
         guttPop[i]/=numTrials
@@ -659,5 +659,3 @@ def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
     pylab.ylabel("# viruses")
     pylab.legend(loc = "best")
     pylab.show()
-
-simulationWithDrug(1, 10, 1.0, 0.0, {}, 1.0, 5)
