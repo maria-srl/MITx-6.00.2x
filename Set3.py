@@ -1,6 +1,22 @@
 from itertools import accumulate as _accumulate, repeat as _repeat
 from bisect import bisect as _bisect
 import random
+import pylab
+''' 
+Begin helper code
+'''
+
+class NoChildException(Exception):
+    """
+    NoChildException is raised by the reproduce() method in the SimpleVirus
+    and ResistantVirus classes to indicate that a virus particle does not
+    reproduce. You can use NoChildException as is, you do not need to
+    modify/add any code.
+    """
+
+'''
+End helper code
+'''
 def choices(population, weights=None, *, cum_weights=None, k=1):
     """Return a k sized list of population elements chosen with replacement.
     If the relative weights or cumulative weights are not specified,
@@ -160,7 +176,7 @@ class Patient(object):
         newViruses=[]
         for virus in self.viruses:
             try:
-                newViruses.append(virus.reproduce(popDensity))
+                newViruses.append(virus.reproduce(self.popDensity))
             except NoChildException:
                 pass
         for newVirus in newViruses:
@@ -343,9 +359,6 @@ class ResistantVirus(SimpleVirus):
                 else:
                     child.resistances[drug]=True
         return child
-from itertools import accumulate as _accumulate, repeat as _repeat
-from bisect import bisect as _bisect
-import random
 def choices(population, weights=None, *, cum_weights=None, k=1):
     """Return a k sized list of population elements chosen with replacement.
     If the relative weights or cumulative weights are not specified,
@@ -595,7 +608,7 @@ class TreatedPatient(Patient):
         for newVirus in newViruses:
             self.viruses.append(newVirus)
         return self.getTotalPop()
-  def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
+def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
                        mutProb, numTrials):
     """
     Runs simulations and plots graphs for problem 5.
@@ -632,7 +645,7 @@ class TreatedPatient(Patient):
             avgPop[j]+=pop
             guttPop[j]+=patient.getResistPop('guttagonol')
         patient.addPrescription('guttagonol')
-        for j in range(151,300):
+        for j in range(150,300):
             pop=patient.update()
             avgPop[j]+=pop
             guttPop[j]+=patient.getResistPop('guttagonol')
@@ -646,3 +659,5 @@ class TreatedPatient(Patient):
     pylab.ylabel("# viruses")
     pylab.legend(loc = "best")
     pylab.show()
+
+simulationWithDrug(1, 10, 1.0, 0.0, {}, 1.0, 5)
